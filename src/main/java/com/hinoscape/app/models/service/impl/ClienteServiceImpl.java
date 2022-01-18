@@ -11,10 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hinoscape.app.mapper.RoleMapper;
 import com.hinoscape.app.mapper.UserMapper;
 import com.hinoscape.app.models.dao.IClienteDao;
 import com.hinoscape.app.models.dao.IFacturaDao;
 import com.hinoscape.app.models.dao.IProductoDao;
+import com.hinoscape.app.models.dao.IRoleDao;
+//import com.hinoscape.app.models.dao.IRoleDao;
 import com.hinoscape.app.models.dao.IUsuarioDao;
 import com.hinoscape.app.models.dto.RoleDto;
 import com.hinoscape.app.models.dto.UserDto;
@@ -42,19 +45,20 @@ public class ClienteServiceImpl implements IClienteService{
 	private IUsuarioDao userDao;
 	
 	@Autowired
+	private IRoleDao roleDao;
+	
+	@Autowired
 	UserMapper userMapper;
+	
+	@Autowired
+	RoleMapper roleMapper;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private IUserPointService userPointService;
-	
 	@Override
-	@Transactional(readOnly = true)
-	public List<Cliente> findAll() {
-		// TODO Auto-generated method stub
-		return (List<Cliente>) clienteDao.findAll();
+	public List<UserDto> findAllUsers() {
+		return userMapper.toDtoList(userDao.findAllUsers());
 	}
 
 	@Override
@@ -81,11 +85,7 @@ public class ClienteServiceImpl implements IClienteService{
 		clienteDao.deleteById(id);
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public Page<Cliente> findAll(Pageable pageable) {
-		return clienteDao.findAll(pageable);
-	}
+
 
 	@Override
 	@Transactional(readOnly = true)
@@ -124,15 +124,17 @@ public class ClienteServiceImpl implements IClienteService{
 	}
 
 	@Override
-	public Object createUser(UserDto user, boolean admin) {
+	public UserDto createUser(UserDto user, boolean admin) {
 		Date currentDate = new Date();
 		
 		RoleDto roleDto = new RoleDto();
 		
 		if(admin) {
 			roleDto.setAuthority("ROLE_ADMIN");
+			roleDto.setAuthorityId(new Long(1));
 		}else {
 			roleDto.setAuthority("ROLE_USER");
+			roleDto.setAuthorityId(new Long(2));
 		}
 		
 		
@@ -144,10 +146,14 @@ public class ClienteServiceImpl implements IClienteService{
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 		//user.setCreatedAt(currentDate);
 		user.setEnabled(true);
+		user.setCreatedAt(currentDate);
 		UserEntity userCreated = this.userDao.save(userMapper.toEntity(user));
 		
+		roleDto.setUserId(userCreated.getId());
+		
+		roleDao.save(roleMapper.toEntity(roleDto));
+		
 		//se crean puntos para el nuevo usuario
-		userPointService.createPointsNewUser(userCreated);
 		return userMapper.toDto(userCreated);
 	}
 

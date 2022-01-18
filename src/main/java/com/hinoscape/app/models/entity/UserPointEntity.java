@@ -31,6 +31,9 @@ public class UserPointEntity {
 	
 	@Column(name = "discovered")
 	Boolean discovered;
+	
+	@Column(name = "content")
+	private String content;
 
 	public Long getId() {
 		return id;
@@ -79,6 +82,12 @@ public class UserPointEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 }

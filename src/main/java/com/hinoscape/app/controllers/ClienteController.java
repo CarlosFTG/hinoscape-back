@@ -3,6 +3,7 @@ package com.hinoscape.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
+//import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.oauth2.OAuth2Operations;
+import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,7 +54,7 @@ import com.hinoscape.app.models.entity.Cliente;
 import com.hinoscape.app.models.service.IClienteService;
 import com.hinoscape.app.models.service.IUploadFileService;
 import com.hinoscape.app.util.paginator.PageRender;
-import com.hinoscape.app.view.xml.ClienteList;
+//import com.hinoscape.app.view.xml.ClienteList;
 
 @Controller
 @SessionAttributes("cliente")
@@ -66,6 +70,9 @@ public class ClienteController {
 	
 	@Autowired
 	private MessageSource messageSource;
+	
+//	private FacebookConnectionFactory factory = new FacebookConnectionFactory("643726556084467",
+//			"c7c175dc6f35671d17b14app60250rgk");
 
 	@Secured({"ROLE_USER"})
 	@GetMapping(value = "/uploads/{filename:.+}")
@@ -99,58 +106,12 @@ public class ClienteController {
 		return "ver";
 	}
 
-	@GetMapping(value = "/listar-rest")
-	public @ResponseBody ClienteList listarRest() {
-		return new ClienteList(clienteService.findAll());
-	}
+//	@GetMapping(value = "/listar-rest")
+//	public @ResponseBody ClienteList listarRest() {
+//		return new ClienteList(clienteService.findAll());
+//	}
 	
 	
-	@RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
-	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
-			Authentication authentication,
-			HttpServletRequest request,
-			Locale locale) {
-
-		if(authentication != null) {
-			logger.info("Hola usuario autenticado, tu username es: ".concat(authentication.getName()));
-		}
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		if(auth != null) {
-			logger.info("Utilizando forma estática SecurityContextHolder.getContext().getAuthentication(): Usuario autenticado: ".concat(auth.getName()));
-		}
-		
-		if(hasRole("ROLE_ADMIN")) {
-			logger.info("Hola ".concat(auth.getName()).concat(" tienes acceso!"));
-		} else {
-			logger.info("Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
-		}
-		
-		SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "");
-		
-		if(securityContext.isUserInRole("ROLE_ADMIN")) {
-			logger.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName()).concat(" tienes acceso!"));
-		} else {
-			logger.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
-		}
-
-		if(request.isUserInRole("ROLE_ADMIN")) {
-			logger.info("Forma usando HttpServletRequest: Hola ".concat(auth.getName()).concat(" tienes acceso!"));
-		} else {
-			logger.info("Forma usando HttpServletRequest: Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
-		}	
-		
-		Pageable pageRequest = PageRequest.of(page, 4);
-
-		Page<Cliente> clientes = clienteService.findAll(pageRequest);
-
-		PageRender<Cliente> pageRender = new PageRender<Cliente>("/listar", clientes);
-		model.addAttribute("titulo", messageSource.getMessage("text.cliente.listar.titulo", null, locale));
-		model.addAttribute("clientes", clientes);
-		model.addAttribute("page", pageRender);
-		return "listar";
-	}
 
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/form")
@@ -242,12 +203,37 @@ public class ClienteController {
 		return "redirect:/listar";
 	}
 	
+//	@GetMapping(value = "/faceBookLogin")
+//	public String faceBookLogin() {
+//
+//		OAuth2Operations operations = factory.getOAuthOperations();
+//		OAuth2Parameters params = new OAuth2Parameters();
+//
+//		params.setRedirectUri("http://localhost:8080/forwardLogin");
+//		params.setScope("email,public_profile");
+//
+//		String url = operations.buildAuthenticateUrl(params);
+//		System.out.println("The URL is" + url);
+//		return "redirect:" + url;
+//
+//	}
 	
 	@RequestMapping(value = {"/createUser"}, method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Object> createUser(@RequestBody UserDto user)   {
+		
+		UserDto userResponse = new UserDto();
 
-		return ResponseEntity.ok(this.clienteService.createUser(user,false));
+		try {
+			 userResponse = this.clienteService.createUser(user,false);
+			
+		}catch (DataIntegrityViolationException e) {
+			userResponse.setErrorMsg("Ya existe un usuario con este nombre");
+		}catch(Exception e) {
+			logger.error(e);
+			userResponse.setErrorMsg("error");
+		}
+		return ResponseEntity.ok(userResponse);
 	}
 	
 	@RequestMapping(value = {"/createUserAdmin"}, method = RequestMethod.POST)
@@ -256,6 +242,16 @@ public class ClienteController {
 
 		return ResponseEntity.ok(this.clienteService.createUser(user, true));
 	}
+	
+	@Secured("ROLE_ADMIN")
+	@RequestMapping(value = {"/getUserDetails"}, method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.FOUND)
+	public ResponseEntity<List<UserDto>> getUserList()   {
+
+		return ResponseEntity.ok(this.clienteService.findAllUsers());
+	}
+	
+	
 	
 	@Secured("ROLE_USER")
 	@RequestMapping(value = {"/getUserDetails"}, method = RequestMethod.POST)

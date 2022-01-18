@@ -1,6 +1,11 @@
 package com.hinoscape.app.models.dto;
 
+import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+
+import lombok.Data;
 
 public class UserDto {
 	private Long id;
@@ -12,18 +17,28 @@ public class UserDto {
 	private String surname2;
 
 	private String dni;
+	
+	private int points;
 
 	private String username;
 
 	private String password;
+	
+	private String email;
 
 	private Boolean enabled;
 
-//	private Date createdAt;
-//
-//	private Date lastLogin;
+	private Date createdAt;
+		
+	private Date removedAt;
+
+	private Date lastLogin;
 
 	private List<RoleDto> roles;
+	
+	private Date birthDate;
+	
+	private String errorMsg;
 
 	public Long getId() {
 		return id;
@@ -95,6 +110,62 @@ public class UserDto {
 
 	public void setDni(String dni) {
 		this.dni = dni;
+	}
+
+	public int getPoints() {
+		return points;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getRemovedAt() {
+		return removedAt;
+	}
+
+	public void setRemovedAt(Date removedAt) {
+		this.removedAt = removedAt;
+	}
+
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 
 //	public Date getCreatedAt() {

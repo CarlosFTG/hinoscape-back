@@ -14,6 +14,8 @@ public class RoleMapper {
 	public RoleEntity toEntity(RoleDto roleDto) {
 		RoleEntity roleEntity = new RoleEntity();
 		roleEntity.setAuthority(roleDto.getAuthority());
+		roleEntity.setUserId(roleDto.getUserId());
+		roleEntity.setAuthorityId(roleDto.getAuthorityId());
 		return roleEntity;
 	}
 	

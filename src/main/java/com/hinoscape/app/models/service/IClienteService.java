@@ -12,10 +12,8 @@ import com.hinoscape.app.models.entity.Producto;
 
 public interface IClienteService {
 
-	public List<Cliente> findAll();
+	public List<UserDto> findAllUsers();
 	
-	public Page<Cliente> findAll(Pageable pageable);
-
 	public void save(Cliente cliente);
 	
 	public Cliente findOne(Long id);
@@ -36,7 +34,7 @@ public interface IClienteService {
 	
 	public Factura fetchFacturaByIdWithClienteWhithItemFacturaWithProducto(Long id);
 
-	public Object createUser(UserDto user, boolean admin);
+	public UserDto createUser(UserDto user, boolean admin);
 
 	public Object getUserDetails(String userName);
 
