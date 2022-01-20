@@ -7,15 +7,19 @@ import org.springframework.stereotype.Service;
 
 import com.hinoscape.app.models.dto.cities.CityDto;
 import com.hinoscape.app.models.entity.city.CityEntity;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 @Service
 public class CityMapper {
 	
-	public CityEntity toEntity(CityDto cityDto) {
+	public CityEntity toEntity(CityDto cityDto) throws ParseException {
 		
 		CityEntity cityEntity = new CityEntity();
 		
 		cityEntity.setName(cityDto.getName());
+		cityEntity.setCoordinates(wktToGeometry(cityDto.getCoordinates()));
 		
 		return cityEntity;
 	}
@@ -25,6 +29,7 @@ public class CityMapper {
 	CityDto cityDto = new CityDto();
 		
 	cityDto.setName(cityEntity.getName());
+	cityDto.setCoordinates(cityEntity.getCoordinates().toString());
 		
 		return cityDto;
 	}
@@ -37,6 +42,13 @@ public class CityMapper {
 		}
 		
 		return citiesDtoList;
+	}
+	
+	public static Point wktToGeometry(String wellKnownText) throws ParseException {
+
+		Point point = (Point) new WKTReader().read(wellKnownText);
+		point.setSRID(3857);
+		return point;
 	}
 
 }

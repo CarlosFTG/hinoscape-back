@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.vividsolutions.jts.geom.Point;
+
 @Entity
 @Table(name = "city")
 public class CityEntity {
@@ -24,6 +26,9 @@ public class CityEntity {
 	@Column(length = 30, unique = true, nullable=false)
 	private String name;
 	
+	@Column(name = "coordinates")
+	private Point coordinates;
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "city")
 	private List<RouteEntity> routesList;
@@ -34,6 +39,14 @@ public class CityEntity {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Point getCoordinates() {
+		return coordinates;
+	}
+
+	public void setCoordinates(Point coordinates) {
+		this.coordinates = coordinates;
 	}
 
 	public List<RouteEntity> getRoutesList() {

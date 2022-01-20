@@ -10,6 +10,8 @@ public class CityDto {
 	
 	private List<RouteDto> routesList;
 	
+	private String coordinates;
+	
 	private String errorMsg;
 
 	public Long getId() {
@@ -43,7 +45,13 @@ public class CityDto {
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-	
-	
 
+	public String getCoordinates() {
+		return coordinates;
+	}
+
+	public void setCoordinates(String coordinates) {
+		this.coordinates = coordinates;
+	}
+	
 }
