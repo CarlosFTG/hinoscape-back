@@ -9,7 +9,7 @@ import com.vividsolutions.jts.io.ParseException;
 
 public interface ICityService {
 
-	List<CityDto> findAll();
+	List<CityDto> findAll() throws ParseException;
 
 	CityDto create(CityDto city) throws JSONException, ParseException;
 

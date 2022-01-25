@@ -1,33 +1,30 @@
 package com.hinoscape.app.models.entity.city;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.vividsolutions.jts.geom.Point;
+
 @Entity
-@Table(name = "routes")
-public class RouteEntity {
+@Table(name = "routes_points")
+public class RoutesPointsEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String name;
-	
+
 	private String observations;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "route")
-	List<RoutesPointsEntity> routePoints;
-	
-	Long city;
+	private Long route;
+
+	@Column(name = "geom")
+	private Point coordinates;
 
 	public Long getId() {
 		return id;
@@ -53,20 +50,21 @@ public class RouteEntity {
 		this.observations = observations;
 	}
 
-	public Long getCity() {
-		return city;
+	public Long getRoute() {
+		return route;
 	}
 
-	public void setCity(Long city) {
-		this.city = city;
+	public void setRoute(Long route) {
+		this.route = route;
 	}
 
-	public List<RoutesPointsEntity> getRoutePoints() {
-		return routePoints;
+	public Point getCoordinates() {
+		return coordinates;
 	}
 
-	public void setRoutePoints(List<RoutesPointsEntity> routePoints) {
-		this.routePoints = routePoints;
+	public void setCoordinates(Point coordinates) {
+		this.coordinates = coordinates;
 	}
 	
+
 }

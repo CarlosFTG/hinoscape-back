@@ -25,7 +25,7 @@ public class CityServiceImpl implements ICityService{
 	CityMapper cityMapper;
 
 	@Override
-	public List<CityDto> findAll() {
+	public List<CityDto> findAll() throws ParseException {
 		List<CityDto> citiesList = cityMapper.toDtoList(cityDao.findAllCities());
 		return citiesList;
 	}

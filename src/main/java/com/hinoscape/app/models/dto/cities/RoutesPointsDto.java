@@ -1,22 +1,15 @@
 package com.hinoscape.app.models.dto.cities;
 
-import java.util.List;
+public class RoutesPointsDto {
+	private Long id;
 
-import com.hinoscape.app.models.entity.city.RoutesPointsEntity;
-
-public class RouteDto {
-private Long id;
-	
 	private String name;
-	
+
 	private String observations;
 	
-	private String coordinates;
-	
-	Long city;
-	
-	List<RoutesPointsDto> routePoints;
+	private Long route;
 
+	private String coordinates;
 	
 	private String errorMsg;
 
@@ -44,20 +37,20 @@ private Long id;
 		this.observations = observations;
 	}
 
+	public Long getRoute() {
+		return route;
+	}
+
+	public void setRoute(Long route) {
+		this.route = route;
+	}
+
 	public String getCoordinates() {
 		return coordinates;
 	}
 
 	public void setCoordinates(String coordinates) {
 		this.coordinates = coordinates;
-	}
-
-	public Long getCity() {
-		return city;
-	}
-
-	public void setCity(Long city) {
-		this.city = city;
 	}
 
 	public String getErrorMsg() {
@@ -67,14 +60,5 @@ private Long id;
 	public void setErrorMsg(String errorMsg) {
 		this.errorMsg = errorMsg;
 	}
-
-	public List<RoutesPointsDto> getRoutePoints() {
-		return routePoints;
-	}
-
-	public void setRoutePoints(List<RoutesPointsDto> routePoints) {
-		this.routePoints = routePoints;
-	}
-	
 	
 }

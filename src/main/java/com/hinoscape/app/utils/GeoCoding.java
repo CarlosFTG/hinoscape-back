@@ -28,7 +28,7 @@ public class GeoCoding {
 		RestTemplate restTemplate = new RestTemplate();
 
 		final String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=" + 1 + "&appid="
-				+ openWeatherappKey;
+				+ "949c28e814e5f4fbda139ca448103c03";
 		ResponseEntity<Object[]> responseEntity = restTemplate.getForEntity(url, Object[].class);
 
 		Object[] objects = responseEntity.getBody();

@@ -56,6 +56,14 @@ public class CityEntity {
 	public void setRoutesList(List<RouteEntity> routesList) {
 		this.routesList = routesList;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	
 }
