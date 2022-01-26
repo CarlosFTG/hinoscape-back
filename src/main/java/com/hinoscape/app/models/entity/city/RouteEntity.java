@@ -3,6 +3,7 @@ package com.hinoscape.app.models.entity.city;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,8 +20,10 @@ public class RouteEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(length = 30, unique = true, nullable=false)
 	private String name;
 	
+	@Column(length = 100,nullable=true)
 	private String observations;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

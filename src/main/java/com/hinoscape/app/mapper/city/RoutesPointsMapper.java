@@ -20,7 +20,7 @@ public class RoutesPointsMapper {
 		routesPointsEntity.setName(routesPointsDto.getName());
 		routesPointsEntity.setObservations(routesPointsDto.getObservations());
 		routesPointsEntity.setCoordinates(wktToGeometry(routesPointsDto.getCoordinates()));
-		routesPointsEntity.setRoute(routesPointsDto.getRoute());
+		//routesPointsEntity.setRoute(routesPointsDto.getRoute());
 
 		return routesPointsEntity;
 	}
